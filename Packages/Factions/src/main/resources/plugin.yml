@@ -1,0 +1,11 @@
+name: GrizzlyCore
+main: com.penzzly.packages.factions.GrizzlyCore
+version: 1.0.0
+depend: [ProtocolLib]
+commands:
+  chat:
+  world:
+  freeze:
+  revive:
+  thaw:
+  givelives:
