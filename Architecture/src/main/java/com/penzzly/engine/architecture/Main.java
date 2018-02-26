@@ -32,6 +32,13 @@ public class Main {
 	private static long averageStepTime = 0;
 	private static long lastStepTime;
 	
+	public static void main(String[] args) {
+		CachedHolder<String> strings = new CachedHolder<>();
+		strings.add("stringywingy");
+		strings.onAdd(System.out::println);
+		strings.add("wingystringums");
+	}
+	
 	public static void main4(String[] args) throws InterruptedException {
 		Test test = new Test();
 		

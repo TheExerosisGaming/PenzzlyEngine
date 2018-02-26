@@ -27,6 +27,7 @@ public class Scheduler {
 	
 	//--Provided--
 	public static TaskConditionBuilder<Task> every(@NotNull Number number, @NotNull TimeUnit unit) {
+		
 		return (task, condition) -> new Task(toMillis(number, unit), task, condition);
 	}
 	

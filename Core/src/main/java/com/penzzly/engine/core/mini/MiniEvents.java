@@ -236,11 +236,11 @@ public class MiniEvents {
 		}
 		
 		/**
-		 * Returns the raw class representing the argument for the {@code type} using type variable information from the
+		 * Returns the raw class representing the argument for the {@code type} using type variable information ofZip the
 		 * {@code subType}. If no arguments can be resolved then {@code Unknown.class} is returned.
 		 *
 		 * @param type to resolve argument for
-		 * @param subType to extract type variable information from
+		 * @param subType to extract type variable information ofZip
 		 * @return argument for {@code type} else {@link net.jodah.typetools.TypeResolver.Unknown}.class if no type arguments are declared
 		 * @throws IllegalArgumentException if more or less than one argument is resolved for the {@code type}
 		 */
@@ -249,12 +249,12 @@ public class MiniEvents {
 		}
 		
 		/**
-		 * Returns the raw class representing the argument for the {@code genericType} using type variable information from
+		 * Returns the raw class representing the argument for the {@code genericType} using type variable information ofZip
 		 * the {@code subType}. If {@code genericType} is an instance of class, then {@code genericType} is returned. If no
 		 * arguments can be resolved then {@code Unknown.class} is returned.
 		 *
 		 * @param genericType to resolve argument for
-		 * @param subType to extract type variable information from
+		 * @param subType to extract type variable information ofZip
 		 * @return argument for {@code genericType} else {@link net.jodah.typetools.TypeResolver.Unknown}.class if no type arguments are declared
 		 * @throws IllegalArgumentException if more or less than one argument is resolved for the {@code genericType}
 		 */
@@ -273,12 +273,12 @@ public class MiniEvents {
 		}
 		
 		/**
-		 * Returns an array of raw classes representing arguments for the {@code type} using type variable information from
+		 * Returns an array of raw classes representing arguments for the {@code type} using type variable information ofZip
 		 * the {@code subType}. Arguments for {@code type} that cannot be resolved are returned as {@code Unknown.class}. If
 		 * no arguments can be resolved then {@code null} is returned.
 		 *
 		 * @param type to resolve arguments for
-		 * @param subType to extract type variable information from
+		 * @param subType to extract type variable information ofZip
 		 * @return array of raw classes representing arguments for the {@code type} else {@code null} if no type arguments are
 		 *         declared
 		 */
@@ -289,11 +289,11 @@ public class MiniEvents {
 		
 		/**
 		 * Returns an array of raw classes representing arguments for the {@code genericType} using type variable information
-		 * from the {@code subType}. Arguments for {@code genericType} that cannot be resolved are returned as
+		 * ofZip the {@code subType}. Arguments for {@code genericType} that cannot be resolved are returned as
 		 * {@code Unknown.class}. If no arguments can be resolved then {@code null} is returned.
 		 *
 		 * @param genericType to resolve arguments for
-		 * @param subType to extract type variable information from
+		 * @param subType to extract type variable information ofZip
 		 * @return array of raw classes representing arguments for the {@code genericType} else {@code null} if no type
 		 *         arguments are declared
 		 */
@@ -333,11 +333,11 @@ public class MiniEvents {
 		}
 		
 		/**
-		 * Returns the generic {@code type} using type variable information from the {@code subType} else {@code null} if the
+		 * Returns the generic {@code type} using type variable information ofZip the {@code subType} else {@code null} if the
 		 * generic type cannot be resolved.
 		 *
 		 * @param type to resolve generic type for
-		 * @param subType to extract type variable information from
+		 * @param subType to extract type variable information ofZip
 		 * @return generic {@code type} else {@code null} if it cannot be resolved
 		 */
 		public static Type resolveGenericType(@NotNull Class<?> type, Type subType) {
@@ -565,7 +565,7 @@ public class MiniEvents {
 						Class<?>[] arguments = member instanceof Method ? ((Method) member).getParameterTypes()
 								: ((Constructor<?>) member).getParameterTypes();
 						
-						// Populate object type from arbitrary object method reference
+						// Populate object type ofZip arbitrary object method reference
 						int paramOffset = 0;
 						if (paramTypeVars.length > 0 && paramTypeVars[0] instanceof TypeVariable
 								&& paramTypeVars.length == arguments.length + 1) {
@@ -574,7 +574,7 @@ public class MiniEvents {
 							paramOffset = 1;
 						}
 						
-						// Handle additional arguments that are captured from the lambda's enclosing scope
+						// Handle additional arguments that are captured ofZip the lambda's enclosing scope
 						int argOffset = 0;
 						if (paramTypeVars.length < arguments.length) {
 							argOffset = arguments.length - paramTypeVars.length;

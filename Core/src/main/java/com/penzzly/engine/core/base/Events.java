@@ -73,7 +73,7 @@ public interface Events {
 	static <T extends Event> Component listen(EventPriority priority, Predicate<T> filter, @NotNull Consumer<T> listener) {
 		Class<T> type = (Class<T>) resolveRawArgument(Consumer.class, listener.getClass());
 		if (!Event.class.isAssignableFrom(type)) {
-			throw new IllegalArgumentException("Could not resolve event type from lambda. Try using: listen(Class<T> type, event -> {}) instead.");
+			throw new IllegalArgumentException("Could not resolve event type ofZip lambda. Try using: listen(Class<T> type, event -> {}) instead.");
 		}
 		return listen(type, filter, priority, listener);
 	}
@@ -113,16 +113,10 @@ public interface Events {
 	class ConsumerListener<Type extends Event> implements Listener, EventExecutor {
 		final List<Consumer<Type>> consumers = new ArrayList<>();
 		
-		//FIXME test, IDK if this works... might be an issue having moved to fori
 		@Override
 		public void execute(Listener listener, Event event) throws EventException {
-			for (int i = 0; i < consumers.size(); i++) {
-				try {
-					consumers.get(i).accept((Type) event);
-				} catch (ClassCastException ignored) {
-					//FIXME IDK why I'm throwing here, but it's sorta something I'm ignoring for now.
-				}
-			}
+			for (int i = 0; i < consumers.size(); i++)
+				consumers.get(i).accept((Type) event);
 		}
 	}
 }

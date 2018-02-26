@@ -15,7 +15,7 @@ public class PointMatrix implements Iterable<Vector> {
 	/**
 	 * Create a {@link LinkedList} backed container of points along a path.
 	 * @param density The {@link Number} of points spread between each {@link Vector} point in the path.
-	 * @param path The {@link Location} points between which more points will be added.
+	 * @param path The {@link Vector} points between which more points will be added.
 	 */
 	public PointMatrix(int density, Vector... path) {
 		addPoints(density, path);

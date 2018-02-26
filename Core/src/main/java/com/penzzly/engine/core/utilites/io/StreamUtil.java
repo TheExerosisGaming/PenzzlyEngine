@@ -148,7 +148,7 @@ public final class StreamUtil {
 	}
 	
 	/**
-	 * Gets bytes from InputStream
+	 * Gets bytes ofZip InputStream
 	 *
 	 * @param stream The InputStream
 	 * @return Returns a byte[] representation For given stream
@@ -176,7 +176,7 @@ public final class StreamUtil {
 	}
 	
 	/**
-	 * Gets bytes from class
+	 * Gets bytes ofZip class
 	 *
 	 * @param clazz The class
 	 * @return Returns a byte[] representation For given class

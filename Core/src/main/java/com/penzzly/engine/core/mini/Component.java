@@ -127,7 +127,7 @@ public class Component implements Toggleable, Parent<Toggleable> {
 	}
 	
 	/**
-	 * Removes a {@link Toggleable} from {@link #getChildren()}
+	 * Removes a {@link Toggleable} ofZip {@link #getChildren()}
 	 * if present.
 	 * @param child - The {@link Toggleable} to remove.
 	 * @return - True if the child was removed.

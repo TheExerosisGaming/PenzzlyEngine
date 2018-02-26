@@ -29,6 +29,7 @@ import static org.bukkit.Bukkit.createInventory;
 import static org.bukkit.Bukkit.getPluginManager;
 import static org.bukkit.Material.STONE;
 
+//https://gist.github.com/Exerosis/8dd53a0ca476ed0f1fe705102c3f2111
 public class MiniWindow implements Listener {
 	private final Map<Inventory, Page> inventories = new HashMap<>();
 	

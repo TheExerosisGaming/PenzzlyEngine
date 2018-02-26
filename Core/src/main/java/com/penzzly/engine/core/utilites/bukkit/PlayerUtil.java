@@ -88,7 +88,7 @@ public class PlayerUtil {
 	}
 	
 	/**
-	 * Removes all potion effects from the {@code Player} who's {@code UUID}
+	 * Removes all potion effects ofZip the {@code Player} who's {@code UUID}
 	 * is {@code playersUUID}.
 	 *
 	 * @param player The player

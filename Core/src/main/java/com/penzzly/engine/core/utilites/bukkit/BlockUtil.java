@@ -93,6 +93,27 @@ public class BlockUtil {
 		});
 	}
 	
+	
+	public static Stream<Vector> directStream(Vector start, Vector direction) {
+		return StreamSupport.stream(directIterator(start, direction).spliterator(), false);
+	}
+	
+	public static Iterable<Vector> directIterator(Vector start, Vector direction) {
+		return () -> new Iterator<Vector>() {
+			Vector current = start.clone();
+			
+			@Override
+			public boolean hasNext() {
+				return current.getY() < 256;
+			}
+			
+			@Override
+			public Vector next() {
+				return current.add(direction);
+			}
+		};
+	}
+	
 	private static final BlockFace[] ORDERED = {
 			NORTH, NORTH_EAST,
 			EAST, SOUTH_EAST,
@@ -112,7 +133,7 @@ public class BlockUtil {
 		return direction(location.getYaw());
 	}
 	
-	public static void main(String[] args) {
+	public static void main3(String[] args) {
 		System.out.println(direction(90));
 	}
 	

@@ -166,6 +166,7 @@ public final class PacketUtil {
 //		sendSilently(player, packet);
 	}
 	
+	
 	public static void openInventory(@NotNull Player player, @NotNull String name, int size) {
 		PacketContainer packet = getProtocolManager().createPacket(OPEN_WINDOW);
 		getOpenInventoryId(player).ifPresent(id ->

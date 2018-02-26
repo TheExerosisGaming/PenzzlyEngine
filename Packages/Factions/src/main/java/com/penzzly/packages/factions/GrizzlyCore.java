@@ -19,14 +19,11 @@ public class GrizzlyCore extends EnginePlugin {
 	
 	public GrizzlyCore() {
 		ServerUtil.init(this);
-		
 		final Map<UUID, BanInfo> bans = new HashMap<>();
 		final Map<Player, Integer> lives = new HashMap<>();
 		
 		BanComponent banComponent = addChild(new BanComponent(bans));
-		
 		CommandComponent commands = addChild(new CommandComponent());
-		
 		addChild(new GrizzlyCommandsComponent(commands, banComponent));
 		addChild(new GrizzlyComponent());
 		addChild(new GrizzlyUnconfigurableComponent());

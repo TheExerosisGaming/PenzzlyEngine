@@ -2,11 +2,9 @@ package com.penzzly.engine.core.components.world;
 
 import com.penzzly.engine.architecture.base.Component;
 import com.penzzly.engine.core.utilites.io.FileUtil;
-import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
-import org.bukkit.WorldType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.world.WorldLoadEvent;
 import org.jetbrains.annotations.NotNull;
@@ -24,6 +22,9 @@ import static com.penzzly.engine.core.base.Events.listen;
 import static com.penzzly.engine.core.utilites.bukkit.ServerUtil.getPlugin;
 import static java.io.File.separator;
 import static java.util.Arrays.asList;
+import static org.apache.commons.io.FileUtils.copyDirectory;
+import static org.apache.commons.io.FileUtils.deleteDirectory;
+import static org.bukkit.WorldType.FLAT;
 
 public class WorldComponent extends Component implements Supplier<World> {
 	private final List<Consumer<World>> loadListeners = new ArrayList<>();
@@ -39,7 +40,7 @@ public class WorldComponent extends Component implements Supplier<World> {
 		onEnable(() -> {
 			System.out.println("Attempting to load world.");
 			if (worldsDirectory.isFile()) {
-				throw new RuntimeException("Cannot load worlds from a file, please specify a directory instead.");
+				throw new RuntimeException("Cannot load worlds ofZip a file, please specify a directory instead.");
 			}
 			if (!worldsDirectory.exists() && !worldsDirectory.mkdirs()) {
 				throw new RuntimeException("Cannot locate or create a worlds directory at the given location.");
@@ -61,13 +62,13 @@ public class WorldComponent extends Component implements Supplier<World> {
 			}
 			System.out.println("Copying world directory.");
 			try {
-				FileUtils.copyDirectory(worldDirectory, Bukkit.getWorldContainer(), false);
+				copyDirectory(worldDirectory, Bukkit.getWorldContainer(), false);
 			} catch (IOException e) {
 				throw new RuntimeException("Failed to copy world directory.");
 			}
 			
 			WorldCreator worldCreator = new WorldCreator(name);
-			worldCreator.type(WorldType.FLAT);
+			worldCreator.type(FLAT);
 			world = Bukkit.createWorld(worldCreator);
 			System.out.println("Loading world.");
 		});
@@ -90,7 +91,7 @@ public class WorldComponent extends Component implements Supplier<World> {
 					Bukkit.getScheduler().scheduleSyncDelayedTask(getPlugin(), () -> {
 						try {
 							System.out.println("Attempting to remove world folder.");
-							FileUtils.deleteDirectory(world.getWorldFolder());
+							deleteDirectory(world.getWorldFolder());
 						} catch (IOException e) {
 							System.err.println("Failed to remove world folder, this is likely to cause world load failures.");
 						}
