@@ -1,4 +1,4 @@
-package com.penzzly.engine.core.mini.random;
+package com.penzzly.engine.core.mini.partial;
 
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;

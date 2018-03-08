@@ -36,7 +36,7 @@ public class MiniWindow implements Listener {
 	public MiniWindow(Plugin plugin) {
 		getPluginManager().registerEvents(this, plugin);
 		
-		/*//Make constants.
+	/*	//Make constants.
 		final String closeMessage = "Awww, looks like {0} stopped looking at the inventory.";
 		final String openMessage = "Looks like {0} popped open your inventory!";
 		final String clickMessage = "Sweet! Looks like {0} {1} clicked on an {3}";

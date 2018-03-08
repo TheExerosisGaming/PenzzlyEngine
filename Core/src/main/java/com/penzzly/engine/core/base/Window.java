@@ -46,7 +46,7 @@ public interface Window {
 							.onClick(() -> screen.page().popFore());
 					
 					//Commit all the pages, which opens the first and queues all the rest.
-				}).commit())
+				}).commit()).var
 		);
 	}
 	

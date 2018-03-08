@@ -32,6 +32,9 @@
     <orderEntry type="library" name="Maven: net.bytebuddy:byte-buddy:1.6.14" level="project" />
     <orderEntry type="library" name="Maven: org.jodd:jodd-bean:3.7.1" level="project" />
     <orderEntry type="library" name="Maven: org.jodd:jodd-core:3.7.1" level="project" />
+    <orderEntry type="library" name="Maven: com.comphenix.protocol:ProtocolLib-API:4.3.0" level="project" />
+    <orderEntry type="library" name="Maven: cglib:cglib-nodep:3.2.5" level="project" />
+    <orderEntry type="library" name="Maven: com.comphenix.executors:BukkitExecutors:1.1-SNAPSHOT" level="project" />
     <orderEntry type="library" name="Maven: commons-io:commons-io:2.5" level="project" />
     <orderEntry type="library" name="Maven: ru.vyarus:generics-resolver:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.esotericsoftware:kryo:4.0.1" level="project" />

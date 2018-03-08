@@ -1,4 +1,4 @@
-package com.penzzly.engine.core.mini;
+package com.penzzly.engine.core.mini.partial;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

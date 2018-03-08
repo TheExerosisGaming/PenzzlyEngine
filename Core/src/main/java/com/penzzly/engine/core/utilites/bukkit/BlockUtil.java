@@ -1,6 +1,7 @@
 package com.penzzly.engine.core.utilites.bukkit;
 
 import com.penzzly.engine.architecture.functions.Optional;
+import io.reactivex.Observable;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -259,7 +260,7 @@ public class BlockUtil {
 		int bx = center.getBlockX();
 		int by = center.getBlockY();
 		int bz = center.getBlockZ();
-		
+		Observable.fromIterable()
 		for (int x = bx - radius; x <= bx + radius; x++) {
 			for (int y = by - radius; y <= by + radius; y++) {
 				for (int z = bz - radius; z <= bz + radius; z++) {

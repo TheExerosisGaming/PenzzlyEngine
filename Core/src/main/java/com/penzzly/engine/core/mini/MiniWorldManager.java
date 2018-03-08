@@ -1,4 +1,4 @@
-package com.penzzly.engine.core.mini.worlds;
+package com.penzzly.engine.core.mini;
 
 import org.bukkit.World;
 import org.bukkit.WorldCreator;

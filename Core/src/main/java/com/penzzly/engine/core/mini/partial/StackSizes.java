@@ -1,4 +1,4 @@
-package com.penzzly.engine.core.mini;
+package com.penzzly.engine.core.mini.partial;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -34,6 +34,17 @@ public class StackSizes implements Listener {
 	private final Plugin plugin;
 	
 	public StackSizes(Plugin plugin) {
+		
+		outer:
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 10; j++) {
+				for (int k = 0; k < 10; k++) {
+					if (k == 5) {
+						break outer;
+					}
+				}
+			}
+		}
 		this.plugin = plugin;
 		//Make sure all current players get updated inventories.
 		getOnlinePlayers().stream()
