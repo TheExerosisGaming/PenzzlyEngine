@@ -14,6 +14,7 @@ import java.util.Map;
 import static java.lang.String.format;
 import static java.nio.file.Files.*;
 
+//https://gist.github.com/Exerosis/a2fbfd160340f1126f89cf6d056ed648
 @SuppressWarnings("unchecked")
 public class MiniConfigurations {
 	public static Yaml YAML = new Yaml(); //Feel free to register type adapters and sutff.
@@ -24,6 +25,7 @@ public class MiniConfigurations {
 		/**
 		 * Gets the underlying map this {@link Configuration}
 		 * delegates to.
+		 *
 		 * @return The underlying map.
 		 */
 		Map<String, Object> getMap();
@@ -42,9 +44,12 @@ public class MiniConfigurations {
 		
 		/**
 		 * Gets and casts the value associated with a given key.
-		 * @param key The key associated with the target value.
-		 *                 (After calling {@link Object#toString()})
-		 * @param <Type> The type to attempt to cast the value to.
+		 *
+		 * @param key
+		 * 		The key associated with the target value.
+		 * 		(After calling {@link Object#toString()})
+		 * @param <Type>
+		 * 		The type to attempt to cast the value to.
 		 * @return The value associated with the key as {@link Type}.
 		 */
 		default <Type> Type get(Object key) {
@@ -55,11 +60,16 @@ public class MiniConfigurations {
 		/**
 		 * Gets and casts the value associated with a given key or returns a default
 		 * which optionally becomes the new associated value.
-		 * @param key The key associated with the target value.
-		 *                 (After calling {@link Object#toString()})
-		 * @param or The optional default value to associate if the key has no association.
-		 * @param saveDefault Whether to use the default value as a new association.
-		 * @param <Type> The type to attempt to cast the value to.
+		 *
+		 * @param key
+		 * 		The key associated with the target value.
+		 * 		(After calling {@link Object#toString()})
+		 * @param or
+		 * 		The optional default value to associate if the key has no association.
+		 * @param saveDefault
+		 * 		Whether to use the default value as a new association.
+		 * @param <Type>
+		 * 		The type to attempt to cast the value to.
 		 * @return The final value associated with the key as {@link Type}.
 		 */
 		default <Type> Type get(Object key, Type or, boolean saveDefault) {
@@ -67,7 +77,7 @@ public class MiniConfigurations {
 			Object value = get(key);
 			if (value == null) {
 				if (saveDefault) {
-					set(key, value);
+					set(key, or);
 				}
 				return or;
 			}
@@ -80,10 +90,14 @@ public class MiniConfigurations {
 		
 		/**
 		 * Gets and casts the value associated with a given key or returns a default.
-		 * @param key The key associated with the target value.
-		 *                 (After calling {@link Object#toString()})
-		 * @param or The default value to return if the key has no association.
-		 * @param <Type> The type to attempt to cast the value to.
+		 *
+		 * @param key
+		 * 		The key associated with the target value.
+		 * 		(After calling {@link Object#toString()})
+		 * @param or
+		 * 		The default value to return if the key has no association.
+		 * @param <Type>
+		 * 		The type to attempt to cast the value to.
 		 * @return The value associated with the key or the default as {@link Type}.
 		 */
 		default <Type> Type get(Object key, Type or) {
@@ -93,10 +107,14 @@ public class MiniConfigurations {
 		/**
 		 * Gets and casts the value associated with a given key or returns a default
 		 * which becomes the new associated value.
-		 * @param key The key associated with the target value.
-		 *                 (After calling {@link Object#toString()})
-		 * @param or The default value to associate if the key has no association.
-		 * @param <Type> The type to attempt to cast the value to.
+		 *
+		 * @param key
+		 * 		The key associated with the target value.
+		 * 		(After calling {@link Object#toString()})
+		 * @param or
+		 * 		The default value to associate if the key has no association.
+		 * @param <Type>
+		 * 		The type to attempt to cast the value to.
 		 * @return The final value associated with the key as {@link Type}.
 		 */
 		default <Type> Type getDefault(Object key, Type or) {
@@ -108,11 +126,15 @@ public class MiniConfigurations {
 		
 		/**
 		 * Sets the value at a given key.
-		 * @param key The key to associate the value with.
-		 *                 (After calling {@link Object#toString()})
-		 * @param value The value to associate with the key.
-		 * @param <Type> The type to attempt to cast the previously
-		 *                   associated value to.
+		 *
+		 * @param key
+		 * 		The key to associate the value with.
+		 * 		(After calling {@link Object#toString()})
+		 * @param value
+		 * 		The value to associate with the key.
+		 * @param <Type>
+		 * 		The type to attempt to cast the previously
+		 * 		associated value to.
 		 * @return The previously associated value as {@link Type} or {@code null}.
 		 */
 		default <Type> Type set(Object key, Object value) {
@@ -123,9 +145,12 @@ public class MiniConfigurations {
 		
 		/**
 		 * Removes the value at a given key.
-		 * @param key The key to unassociate.
-		 * @param <Type> The type to attempt to cast the previously
-		 *                   associated value to.
+		 *
+		 * @param key
+		 * 		The key to unassociate.
+		 * @param <Type>
+		 * 		The type to attempt to cast the previously
+		 * 		associated value to.
 		 * @return The previously associated value as {@link Type} or {@code null}.
 		 */
 		default <Type> Type remove(Object key) {
@@ -134,11 +159,15 @@ public class MiniConfigurations {
 		
 		/**
 		 * Removes the value at a given key.
-		 * @param key The key to unassociate.
-		 * @param or The default value to return if the key had no previous
-		 *                association.
-		 * @param <Type> The type to attempt to cast the previously
-		 *                   associated value to.
+		 *
+		 * @param key
+		 * 		The key to unassociate.
+		 * @param or
+		 * 		The default value to return if the key had no previous
+		 * 		association.
+		 * @param <Type>
+		 * 		The type to attempt to cast the previously
+		 * 		associated value to.
 		 * @return The previously associated value or the default as {@link Type}.
 		 */
 		default <Type> Type remove(Object key, Type or) {
@@ -160,8 +189,10 @@ public class MiniConfigurations {
 		/**
 		 * Gets the {@link Configuration} representation of a {@link Map}
 		 * value associated with a given key.
-		 * @param key The key associated with the target value.
-		 *                 (After calling {@link Object#toString()})
+		 *
+		 * @param key
+		 * 		The key associated with the target value.
+		 * 		(After calling {@link Object#toString()})
 		 * @return The {@link Configuration} representation of the
 		 * value or an empty {@link Map}.
 		 */
@@ -174,8 +205,10 @@ public class MiniConfigurations {
 		
 		/**
 		 * Checks if there is a key by the given name.
-		 * @param key The key to check for
-		 *                 (After calling {@link Object#toString()})
+		 *
+		 * @param key
+		 * 		The key to check for
+		 * 		(After calling {@link Object#toString()})
 		 * @return true if the key exists.
 		 */
 		default boolean containsKey(Object key) {
@@ -184,7 +217,9 @@ public class MiniConfigurations {
 		
 		/**
 		 * Checks if there is a key associated with the given value
-		 * @param value The value to check for.
+		 *
+		 * @param value
+		 * 		The value to check for.
 		 * @return true if there is a key associated with the value.
 		 */
 		default boolean containsValue(Object value) {
@@ -223,8 +258,7 @@ public class MiniConfigurations {
 				
 				@Override
 				public Map<String, Object> getMap() {
-					//FIXME maybe improve performance on this somewhat?
-					return YamlConfiguration.this.get(key, new HashMap<>());
+					return YamlConfiguration.this.getDefault(key, new HashMap<>());
 				}
 			};
 		}
@@ -240,7 +274,9 @@ public class MiniConfigurations {
 			
 			@Override
 			public YamlConfiguration load() {
-				map = (Map<String, Object>) YAML.load(yaml.getValue());
+				Object loaded = YAML.load(yaml.getValue());
+				if (loaded != null)
+					map = (Map<String, Object>) loaded;
 				return this;
 			}
 			
@@ -279,7 +315,7 @@ public class MiniConfigurations {
 			public String getValue() {
 				try {
 					if (!exists(path)) {
-						createDirectories(path);
+						createDirectories(path.getParent());
 						createFile(path);
 					}
 					return new String(readAllBytes(path));
