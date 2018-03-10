@@ -1,10 +1,9 @@
 package com.penzzly.engine.core.components.unorganized;
 
 import com.penzzly.engine.architecture.base.Component;
-import net.minecraft.server.v1_7_R4.Item;
+import net.minecraft.server.v1_12_R1.Item;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_7_R4.util.CraftMagicNumbers;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

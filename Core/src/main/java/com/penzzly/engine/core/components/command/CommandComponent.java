@@ -1,7 +1,9 @@
 package com.penzzly.engine.core.components.command;
 
 import com.penzzly.engine.architecture.base.Component;
+import com.penzzly.engine.architecture.base.Toggleable;
 import com.penzzly.engine.architecture.functions.Optional;
+import com.penzzly.engine.architecture.utilites.Components;
 import com.penzzly.engine.core.utilites.EnumUtil;
 import com.penzzly.engine.core.utilites.time.Duration;
 import net.jodah.typetools.TypeResolver;
@@ -138,9 +140,18 @@ public class CommandComponent extends Component {
 		return (TypeAdapter<To, ?>) target.compose((TypeAdapter<?, Object>) getAdapter(target.getFrom()));
 	}
 	
-	public Predicate<String> onCommand(Predicate<String> filter, BiConsumer<CommandSender, Arguments> listener) {
-		commandListeners.put(filter, listener);
-		return filter;
+	public Toggleable onPlayerCommand(Predicate<String> filter, BiConsumer<Player, Arguments> listener) {
+		return onCommand(filter, (sender, args) -> {
+			if (sender instanceof Player)
+				listener.accept((Player) sender, args);
+		});
+	}
+	
+	public Toggleable onCommand(Predicate<String> filter, BiConsumer<CommandSender, Arguments> listener) {
+		return Components.create(
+				() -> commandListeners.put(filter, listener),
+				() -> commandListeners.remove(filter, listener)
+		);
 	}
 	
 	@NotNull
