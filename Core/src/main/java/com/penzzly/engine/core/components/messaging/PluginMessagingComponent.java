@@ -73,7 +73,7 @@ public class PluginMessagingComponent extends Component implements PluginMessage
 	}
 	
 	public Observable<DataInput> messageForResponse(Player player, String channel, byte[] message) {
-		return Observable.<DataInput>create(observer -> {
+		return Observable.create(observer -> {
 			onMessage(new BiConsumer<Player, DataInput>() {
 				@Override
 				public void accept(Player target, DataInput data) {
@@ -85,7 +85,7 @@ public class PluginMessagingComponent extends Component implements PluginMessage
 				}
 			});
 			sendPluginMessage(player, channel, message);
-		}).timeout(3, SECONDS);
+		});
 	}
 	
 	static class BungeeChannel implements Closeable, PluginMessageListener {

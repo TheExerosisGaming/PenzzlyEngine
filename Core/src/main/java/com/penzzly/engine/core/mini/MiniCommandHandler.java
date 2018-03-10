@@ -8,6 +8,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
+//https://gist.github.com/Exerosis/3ca8398185664f0726b4e2bef85c1822
 public class MiniCommandHandler {
 	private JavaPlugin plugin;
 	
