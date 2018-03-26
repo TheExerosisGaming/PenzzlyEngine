@@ -23,7 +23,6 @@ public class EntityTypeAdapter extends TypeAdapter<Entity> {
 	@Override
 	public Entity read(@NotNull JsonReader reader) throws IOException {
 		UUID uuid = fromString(reader.nextString());
-		
 		return getWorlds().stream()
 				.map(World::getEntities)
 				.flatMap(Collection::stream)

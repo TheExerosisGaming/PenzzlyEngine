@@ -9,8 +9,11 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.penzzly.engine.architecture.base.Component;
 import com.penzzly.engine.architecture.functions.compat.Consumer;
 import com.penzzly.engine.architecture.utilites.Clarifiers;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Color;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,7 +21,10 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
+import java.util.List;
 
 import static com.comphenix.protocol.PacketType.Play.Server.*;
 import static com.comphenix.protocol.ProtocolLibrary.getProtocolManager;
@@ -128,7 +134,6 @@ public final class PacketUtil {
 	}
 	
 	public static Component intercept(PacketType type, @NotNull Consumer<PacketEvent> packet) {
-		Player player;
 		PacketListener listener = new PacketAdapter(getPlugin(), type) {
 			@Override
 			public void onPacketReceiving(PacketEvent event) {
@@ -144,6 +149,68 @@ public final class PacketUtil {
 				() -> getProtocolManager().addPacketListener(listener),
 				() -> getProtocolManager().removePacketListener(listener)
 		);
+	}
+	
+	static class MultipleNameTags {
+		private static final Field VEHICLE;
+		private static final Field PASSENGERS;
+		
+		static {
+			try {
+				VEHICLE = PacketPlayOutMount.class.getDeclaredField("a");
+				VEHICLE.setAccessible(true);
+				PASSENGERS = PacketPlayOutMount.class.getDeclaredField("b");
+				PASSENGERS.setAccessible(true);
+			} catch (NoSuchFieldException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		public static Packet getMountPacket(int vehicle, int... passengers) {
+			try {
+				PacketPlayOutMount packet = new PacketPlayOutMount();
+				VEHICLE.set(packet, vehicle);
+				PASSENGERS.set(packet, passengers);
+				return packet;
+			} catch (IllegalAccessException e) {
+				throw new RuntimeException(e);
+			}
+		}
+		
+		public static List<Packet> setNameTag(Entity entity, String... lines) {
+			net.minecraft.server.v1_12_R1.World world = ((CraftWorld) entity.getWorld()).getHandle();
+			int[] passengers = new int[lines.length];
+			List<Packet> packets = new LinkedList<>();
+			
+			for (int i = 0; i < lines.length; i++) {
+				int size = (i - 1) * -1;
+				EntitySlime holder = new EntitySlime(world);
+				holder.setInvulnerable(true);
+				Location location = entity.getLocation();
+				holder.setPosition(location.getX(), location.getY(), location.getZ());
+				holder.setInvisible(true);
+				holder.setSize(size, false);
+				
+				EntityArmorStand line = new EntityArmorStand(world);
+				line.setInvulnerable(true);
+				line.setPosition(location.getX(), location.getY(), location.getZ());
+				
+				line.setInvisible(true);
+				line.setSmall(true);
+				line.setCustomName(lines[i]);
+				line.setCustomNameVisible(true);
+				
+				passengers[i] = holder.getId();
+				
+				packets.add(new PacketPlayOutSpawnEntityLiving(holder));
+				packets.add(new PacketPlayOutSpawnEntityLiving(line));
+				packets.add(getMountPacket(holder.getId(), line.getId()));
+			}
+			
+			packets.add(getMountPacket(entity.getEntityId(), passengers));
+			
+			return packets;
+		}
 	}
 	
 	public static void sendTooltip(@NotNull Player player, @NotNull Object message) {

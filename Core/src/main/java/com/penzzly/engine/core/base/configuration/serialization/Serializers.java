@@ -13,9 +13,9 @@ import static com.google.gson.FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES;
 public interface Serializers {
 	Gson GSON = new GsonBuilder()
 			.registerTypeAdapter(OfflinePlayer.class, new OfflinePlayerTypeAdapter())
+			.registerTypeHierarchyAdapter(Entity.class, new EntityTypeAdapter())
 			.registerTypeAdapter(Player.class, new PlayerTypeAdapter())
 			.registerTypeAdapter(Material.class, new MaterialTypeAdapter())
-			.registerTypeHierarchyAdapter(Entity.class, new EntityTypeAdapter())
 			.setPrettyPrinting()
 			.enableComplexMapKeySerialization()
 			.setFieldNamingPolicy(LOWER_CASE_WITH_UNDERSCORES)

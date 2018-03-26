@@ -3,7 +3,9 @@ package com.penzzly.engine.core.base;
 
 import com.penzzly.engine.core.base.window.Display;
 import com.penzzly.engine.core.base.window.Screen;
+import com.penzzly.engine.core.base.window.Transaction;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -13,7 +15,8 @@ import java.util.Map;
 import java.util.function.BiConsumer;
 
 import static com.google.common.collect.Lists.partition;
-import static org.bukkit.Material.ARROW;
+import static com.penzzly.engine.core.base.Events.listen;
+import static org.bukkit.Material.*;
 
 public interface Window {
 	Map<Player, Screen> screens = new HashMap<>();
@@ -50,36 +53,29 @@ public interface Window {
 		);
 	}
 	
-	/*public static void main(String[] args) {
-		final String closeMessage = "Awww, looks like {0} stopped looking at the inventory.";
-		final String openMessage = "Looks like {0} popped open your inventory!";
-		final String clickMessage = "Sweet! Looks like {0} {1} clicked on an {3}";
-
+	static void main(String[] args) {
 		Display testDisplay = like((screen, player) -> {
-			Transaction firstPage = screen.page(page -> {
-				page.onEnable(() ->
-						System.out.println(format(closeMessage, player.getName()))
-				);
-				page.onClose(() ->
-						System.out.println(format(openMessage, player.getName()))
-				);
+			screen.page(page -> {
 				page.element()
-						.title("Test Item")
-						.icon(Material.APPLE)
+						.title("Go Forward!")
+						.icon(APPLE)
 						.amount(3)
-						.text("Lore,", "Lore,", "Lore!")
-						.onClick(type ->
-								System.out.println(format(clickMessage,
-										player.getName(),
-										type.toString().replace('_', ' ').toLowerCase(),
-										"apple")
-								)
-						);
-			});
-
+						.text("Lore", "Lore", "Lore")
+						.onClick(screen.page()::popFore);
+				
+				page.element()
+						.title("Close!")
+						.icon(BARRIER)
+						.onClick(player::closeInventory);
+			}).commitClearing();
 			
+			Transaction secondPage = screen.page(page -> page.element()
+					.title("Go Back!")
+					.icon(BARRIER)
+					.onClick(screen.page()::popBack)
+			).commit();
 		});
-
-		addChild(listen((PlayerJoinEvent event) -> testDisplay.showTo(event.getPlayer())));
-	}*/
+		
+		listen((PlayerJoinEvent event) -> testDisplay.showTo(event.getPlayer()));
+	}
 }

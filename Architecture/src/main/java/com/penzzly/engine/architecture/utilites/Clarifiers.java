@@ -18,5 +18,4 @@ public interface Clarifiers {
 	@interface Double {
 	
 	}
-	//etc.
 }

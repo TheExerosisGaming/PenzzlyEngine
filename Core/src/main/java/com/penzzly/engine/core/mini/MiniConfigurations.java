@@ -19,7 +19,6 @@ import static java.nio.file.Files.*;
 public class MiniConfigurations {
 	public static Yaml YAML = new Yaml(); //Feel free to register type adapters and sutff.
 	
-	
 	//--Configuration--
 	public interface Configuration {
 		/**

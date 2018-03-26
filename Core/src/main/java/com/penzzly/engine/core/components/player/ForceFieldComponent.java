@@ -1,7 +1,6 @@
 package com.penzzly.engine.core.components.player;
 
 import com.penzzly.engine.architecture.base.Component;
-import com.penzzly.engine.core.base.Scheduler;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -9,19 +8,40 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
+import static com.penzzly.engine.core.base.Scheduler.every;
+
 public class ForceFieldComponent extends Component {
 	
-	public ForceFieldComponent(@NotNull Iterable<Player> players, @NotNull Predicate<Entity> entities, int range) {
-		addChild(Scheduler.every().second().run(() ->
-				players.forEach(player ->
-						player.getNearbyEntities(range, range, range).forEach(entity -> {
-							if (entities.test(entity)) {
-								entity.setVelocity(getLaunchVector(player, entity));
-							}
-						}))).forever().synchronously());
+	public ForceFieldComponent(@NotNull Iterable<Player> players, @NotNull Predicate<Entity> entities, Number range) {
+		this(players, entities, new Vector(range.intValue(), range.intValue(), range.intValue()));
 	}
 	
-	private Vector getLaunchVector(@NotNull Player player, @NotNull Entity entity) {
-		return entity.getLocation().toVector().subtract(player.getLocation().toVector()).normalize().multiply(0.7).setY(0.1);
+	public static void main(String[] args) {
+		new ForceFieldComponent(null, entity -> {
+			return
+		})
+	}
+	
+	public ForceFieldComponent(@NotNull Iterable<Player> players, @NotNull Predicate<Entity> entities, Vector range) {
+		addChild(every().second().run(() ->
+				players.forEach(player ->
+						player.getNearbyEntities(range.getX(), range.getY(), range.getZ())
+								.stream()
+								.filter(entities)
+								.forEach(entity ->
+										entity.setVelocity(getLaunchVector(player, entity))
+								)
+				)
+		).forever().synchronously());
+	}
+	
+	private static Vector getLaunchVector(@NotNull Player player, @NotNull Entity entity) {
+		return entity.getLocation()
+				.toVector()
+				.subtract(player.getLocation().toVector())
+				.normalize()
+				.multiply(0.7)
+				.setY(0.1);
+		
 	}
 }
