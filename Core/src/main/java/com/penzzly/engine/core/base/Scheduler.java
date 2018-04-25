@@ -16,18 +16,15 @@ import java.util.function.Supplier;
 import static com.penzzly.engine.core.utilites.bukkit.ServerUtil.getPlugin;
 import static com.penzzly.engine.core.utilites.functions.Functions.FALSE;
 import static com.penzzly.engine.core.utilites.functions.Functions.TRUE;
-import static com.penzzly.engine.core.utilites.time.Duration.toMillis;
 import static java.lang.Runtime.getRuntime;
 import static java.lang.System.currentTimeMillis;
 import static java.util.concurrent.TimeUnit.*;
 import static org.bukkit.Bukkit.getScheduler;
 
+
 public class Scheduler {
-	//--Duration--
-	
 	//--Provided--
 	public static TaskConditionBuilder<Task> every(@NotNull Number number, @NotNull TimeUnit unit) {
-		
 		return (task, condition) -> new Task(toMillis(number, unit), task, condition);
 	}
 	

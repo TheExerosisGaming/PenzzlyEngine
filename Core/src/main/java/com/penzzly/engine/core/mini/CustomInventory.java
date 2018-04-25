@@ -143,7 +143,7 @@ public class CustomInventory implements MiniWindow.Page, IInventory {
 	}
 	
 	@Override
-	public Map<Integer, MiniWindow.Item> elements() {
+	public Map<Integer, MiniWindow.Item> items() {
 		return elements;
 	}
 	
@@ -153,7 +153,7 @@ public class CustomInventory implements MiniWindow.Page, IInventory {
 	}
 	
 	@Override
-	public MiniWindow.Item element(Number index) {
+	public MiniWindow.Item item(Number index) {
 		return null;
 	}
 	

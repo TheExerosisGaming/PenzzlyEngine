@@ -19,7 +19,7 @@
 //
 //	//--Window--
 //	exports com.penzzly.engine.core.base.window;
-//	exports com.penzzly.engine.core.base.window.elements;
+//	exports com.penzzly.engine.core.base.window.items;
 //	exports com.penzzly.engine.core.base.window.header;
 //	exports com.penzzly.engine.core.base.window.footer;
 //	exports com.penzzly.engine.core.base.window.page;

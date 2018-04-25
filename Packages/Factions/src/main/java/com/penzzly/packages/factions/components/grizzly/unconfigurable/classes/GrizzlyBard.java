@@ -8,6 +8,7 @@ import com.penzzly.engine.core.utilites.bukkit.PacketUtil;
 import com.penzzly.engine.core.utilites.time.Duration;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Zombie;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -220,9 +221,9 @@ public class GrizzlyBard extends Component {
 		player.setExp(amount / MAX_MANA);
 	}
 	
+	
 	private void chain(@NotNull Player target, @NotNull List<Player> targets, @NotNull BardAbility ability) {
 		double range = ability.range.apply(targets.size());
-		
 		if (range > 0) {
 			closePlayers(target, range)
 					.filter(t -> !targets.contains(t))

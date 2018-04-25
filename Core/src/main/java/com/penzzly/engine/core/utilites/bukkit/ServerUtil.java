@@ -1,9 +1,13 @@
 package com.penzzly.engine.core.utilites.bukkit;
 
+import com.google.common.base.Optional;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
@@ -15,9 +19,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.messaging.PluginMessageListener;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static org.bukkit.Bukkit.*;
 import static org.bukkit.metadata.LazyMetadataValue.CacheStrategy;
@@ -101,7 +107,128 @@ public class ServerUtil {
 		Bukkit.getOnlinePlayers().forEach(player -> sendPluginMessage(player, channel, bytes));
 	}
 	
+	interface DataSerializer<Type> {
+		Collection<Type> possibleValues(); //Or something like that?
+		
+		String serialize(Type value);
+		
+		Optional<Type> deserialize(String value);
+		
+		default Class<Type> type() {
+			return (Class<Type>) possibleValues().iterator().next().getClass();
+		}
+	}
+	
+	static class DataMasker<Type extends Comparable<Type>> {
+		private final IBlockState<Type> state;
+		
+		
+		public DataMasker(String name, DataSerializer<Type> serializer) {
+			this.state = new IBlockState<Type>() {
+				@Override
+				public String a() {
+					return name;
+				}
+				
+				@Override
+				public Collection<Type> c() {
+					return serializer.possibleValues();
+				}
+				
+				@Override
+				public Class<Type> b() {
+					return serializer.type();
+				}
+				
+				@Override
+				public Optional<Type> b(String value) {
+					return serializer.deserialize(value);
+				}
+				
+				@Override
+				public String a(Type value) {
+					return serializer.serialize(value);
+				}
+			};
+		}
+		
+		public void setMaskedData(Block block, Type data) {
+			World world = ((CraftWorld) block.getWorld()).getHandle();
+			int x = block.getX(), y = block.getY(), z = block.getZ();
+			
+			
+			ChunkSection section = world.getChunkAt(x >> 4, z >> 4).getSections()[y >> 4];
+			int rX = x & 15, rY = y & 15, rZ = z & 15;
+			IBlockData customData = section.getType(rX, rY, rZ);
+			customData.set(state, data);
+			section.setType(rX, rY, rZ, customData);
+		}
+		
+		public Type getMaskedData(Block block) {
+			World world = ((CraftWorld) block.getWorld()).getHandle();
+			int x = block.getX(), y = block.getY(), z = block.getZ();
+			
+			ChunkSection section = world.getChunkAt(x >> 4, z >> 4).getSections()[y >> 4];
+			IBlockData customData = section.getType(x & 15, y & 15, z & 15);
+			return customData.get(state);
+		}
+	}
+	
+	public static TileEntity getTitleEntity(Block block) {
+		World world = ((CraftWorld) block.getWorld()).getHandle();
+		int x = block.getX(), z = block.getZ();
+		BlockPosition position = new BlockPosition(x, block.getY(), z);
+		return world.getChunkAt(x >> 4, z >> 4).tileEntities.get(position);
+	}
+	
+	public static void setTileEntity(Block block, TileEntity entity) {
+		World world = ((CraftWorld) block.getWorld()).getHandle();
+		int x = block.getX(), z = block.getZ();
+		BlockPosition position = new BlockPosition(x, block.getY(), z);
+		world.getChunkAt(x >> 4, z >> 4).tileEntities.put(position, entity);
+	}
+	
+	
 	public static void broadcast(String message, @NotNull Iterable<Player> players) {
+		class CustomData implements Comparable<CustomData> {
+			final String first;
+			final int second;
+			
+			CustomData(String first, int second) {
+				this.first = first;
+				this.second = second;
+			}
+			
+			@Override
+			public int compareTo(@NotNull CustomData o) {
+				return Integer.compare(second, o.second);
+			}
+		}
+		
+		DataSerializer<CustomData> serializer = new DataSerializer<CustomData>() {
+			@Override
+			public Collection<CustomData> possibleValues() {
+				return asList(new CustomData("typeA", 1), new CustomData("typeB", 2));
+			}
+			
+			@Override
+			public String serialize(CustomData value) {
+				return value.first + ":" + value.second;
+			}
+			
+			@Override
+			public Optional<CustomData> deserialize(String value) {
+				String[] split = value.split(":");
+				if (split.length < 2)
+					return Optional.absent();
+				return Optional.of(new CustomData(split[0], Integer.parseInt(split[1])));
+			}
+		};
+		
+		DataMasker<CustomData> masker = new DataMasker<>("customData", serializer);
+		Block block = Bukkit.getWorlds().get(0).getBlockAt(0, 0, 0);
+		masker.setMaskedData(block, new CustomData("Whatever", 10));
+		CustomData data = masker.getMaskedData(block);
 		for (Player player : players)
 			player.sendMessage(message);
 	}

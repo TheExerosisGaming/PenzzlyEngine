@@ -108,7 +108,7 @@ public class TutorialGame extends EnginePlugin {
 		
 		//Next we have Holders, they are a special datatype that can be used to define a scope without
 		//any memory footprint. Each holder is both an Iterable<T> and a Predicate<T> the predicate test
-		//method returns true if the Holder contains the specified element.
+		//method returns true if the Holder contains the specified item.
 		//There are two primary types of Holders.
 		//1. Holder: A holder is simply iterated over or tested for contains.
 		//2. MutableHolder: This type of holder has methods add, and remove. As well as

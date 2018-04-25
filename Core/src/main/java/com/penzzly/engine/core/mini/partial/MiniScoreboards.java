@@ -9,8 +9,10 @@ import static org.bukkit.ChatColor.getLastColors;
 import static org.bukkit.ChatColor.translateAlternateColorCodes;
 import static org.bukkit.scoreboard.DisplaySlot.SIDEBAR;
 
+//https://gist.github.com/Exerosis/f422c17dde154cca65cde4c4e4b43ca3
 public class MiniScoreboards {
 	public interface Scoreboard {
+		
 		/**
 		 * Sets the line at a given index to the given text.
 		 * @param index - The index of the line.
@@ -75,17 +77,16 @@ public class MiniScoreboards {
 		private static final String[] BLANKS = new String[MAX_LINES];
 		private final Objective objective;
 		private final org.bukkit.scoreboard.Scoreboard board;
-		private final Team[] teams = new Team[15];
-		private final boolean[] set = new boolean[15];
+		private final Team[] teams = new Team[MAX_LINES];
+		private final boolean[] set = new boolean[MAX_LINES];
 		
 		static {
 			ChatColor[] colors = ChatColor.values();
-			for (int i = 0; i < BLANKS.length; i++)
+			for (int i = 0; i < MAX_LINES; i++)
 				BLANKS[i] = colors[i].toString();
 		}
 		
 		public TeamsScoreboard() {
-			
 			this.board = Bukkit.getScoreboardManager().getNewScoreboard();
 			objective = board.registerNewObjective("test", "dummy");
 			objective.setDisplaySlot(SIDEBAR);

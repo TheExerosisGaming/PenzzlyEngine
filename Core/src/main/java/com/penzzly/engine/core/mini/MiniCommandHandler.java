@@ -37,6 +37,10 @@ public class MiniCommandHandler {
 			this.args = args;
 		}
 		
+		
+		//TODO add very simple type adapters.
+		
+		
 		public String nextUnsafe() {
 			return nextOr(null);
 		}

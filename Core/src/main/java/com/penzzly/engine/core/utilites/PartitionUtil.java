@@ -18,8 +18,8 @@ public final class PartitionUtil {
             }
 
             @Override
-            public boolean test(T element) {
-                return list.contains(element);
+            public boolean test(T item) {
+                return list.contains(item);
             }
         };
         return Pair.with(new PartitionHolder<T>() {
@@ -45,8 +45,8 @@ public final class PartitionUtil {
         });
     }
 
-    public static <T> PartitionHolder<T> partition(Predicate<T> filter, T... elements) {
-        return partition(Arrays.asList(elements), filter);
+    public static <T> PartitionHolder<T> partition(Predicate<T> filter, T... items) {
+        return partition(Arrays.asList(items), filter);
     }
 
     public static <T> PartitionHolder<T> partition(Collection<T> list, Predicate<T> filter) {
@@ -62,8 +62,8 @@ public final class PartitionUtil {
             }
 
             @Override
-            public boolean test(T element) {
-                return list.contains(element);
+            public boolean test(T item) {
+                return list.contains(item);
             }
         }.partition(filter);
     }*/

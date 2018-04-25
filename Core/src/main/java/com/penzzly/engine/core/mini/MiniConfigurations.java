@@ -6,6 +6,7 @@ import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.net.URI;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ public class MiniConfigurations {
 		
 		//--Getters-
 		default int size() {
+			Files.newInputStream().t
 			return getMap().size();
 		}
 		

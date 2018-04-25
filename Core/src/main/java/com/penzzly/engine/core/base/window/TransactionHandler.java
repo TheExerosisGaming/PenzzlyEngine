@@ -92,7 +92,7 @@ public abstract class TransactionHandler<Type extends Element> {
 				queue.poll();
 			}
 		}
-		throw new RuntimeException("Could not locate an element with id: " + id);
+		throw new RuntimeException("Could not locate an item with id: " + id);
 	}
 	
 	private Transaction<Type> dig(@NotNull Queue<Transaction<Type>> queue, int times) {

@@ -1,8 +1,6 @@
 package com.penzzly.engine.core.mini;
 
-import com.google.common.collect.ListMultimap;
 import org.bukkit.Material;
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,187 +15,155 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.material.MaterialData;
 import org.bukkit.plugin.Plugin;
 
-import java.util.ArrayList;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 
 import static com.google.common.collect.Lists.newArrayList;
-import static com.google.common.collect.Multimaps.newListMultimap;
 import static java.util.Arrays.asList;
-import static java.util.Collections.max;
 import static org.bukkit.Bukkit.createInventory;
 import static org.bukkit.Bukkit.getPluginManager;
 import static org.bukkit.Material.STONE;
 
-//https://gist.github.com/Exerosis/ba02f24882a703808bdd3277a62bef3a
+//https://gist.github.com/Exerosis/0d330decbb96f5695ac0bcf19e33d2e6
 public class MiniWindow implements Listener {
 	public MiniWindow(Plugin plugin) {
 		getPluginManager().registerEvents(this, plugin);
 	}
 	
 	//--Page--
-	public Inventory page(Consumer<Page> like) {
-		Page page = page();
+	public Inventory page(final int size, final String title, final Consumer<Page> like) {
+		Page page = page(size, title);
 		like.accept(page);
-		return page.toInventory();
+		return page.getInventory();
 	}
 	
-	public Page page() {
-		return new PageImpl();
+	public Page page(final int size, final String title) {
+		return new PageImpl() {
+			final Inventory inventory = createInventory(this, size, title);
+			final Item[] items = new Item[size];
+			
+			@Override
+			public Inventory getInventory() {
+				return inventory;
+			}
+			
+			@Override
+			public int size() {
+				return size;
+			}
+			
+			@Override
+			public String title() {
+				return title;
+			}
+			
+			@Override
+			public Item[] items() {
+				return items;
+			}
+		};
 	}
 	
 	//--Events--
 	@EventHandler
 	void onClick(InventoryClickEvent event) {
-		InventoryHolder holder = event.getInventory().getHolder();
-		if (holder instanceof PageImpl && event.getCurrentItem() != null)
-			if (((PageImpl) holder).clickListeners.get(event.getCurrentItem()).stream()
-					.anyMatch(listener ->
-							listener.test((Player) event.getWhoClicked(), event.getClick())
-					))
-				event.setCancelled(true);
+		final ItemStack item = event.getCurrentItem();
+		if (item instanceof ItemImpl && ((ItemImpl) item).listener.
+				test((Player) event.getWhoClicked(), event.getClick()))
+			event.setCancelled(true);
 	}
 	
 	@EventHandler
 	void onClose(InventoryCloseEvent event) {
-		fireOpenClose(event.getInventory(), event.getPlayer());
+		final InventoryHolder holder = event.getInventory().getHolder();
+		if (holder instanceof PageImpl)
+			((PageImpl) holder).openListener.accept((Player) event.getPlayer());
 	}
 	
 	@EventHandler
 	void onOpen(InventoryOpenEvent event) {
-		fireOpenClose(event.getInventory(), event.getPlayer());
+		final InventoryHolder holder = event.getInventory().getHolder();
+		if (holder instanceof PageImpl)
+			((PageImpl) holder).closeListener.accept((Player) event.getPlayer());
 	}
-	
-	private void fireOpenClose(Inventory inventory, HumanEntity player) {
-		InventoryHolder holder = inventory.getHolder();
-		if (holder instanceof PageImpl && player instanceof Player)
-			((PageImpl) holder).openListeners.forEach(listener ->
-					listener.accept((Player) player)
-			);
-	}
-	
 	
 	//--Classes--
-	interface EventListener extends AutoCloseable {
-		default void unregister() {
-			try {
-				close();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
-	
-	interface Page {
-		int MAX_INDEX = 45;
-		
-		Page title(Object title);
-		
-		Map<Integer, Item> elements();
-		
-		Inventory toInventory();
-		
-		default int size() {
-			return max(elements().keySet()) + 1;
-		}
-		
-		default Item element() {
-			for (int i = 0; i < MAX_INDEX; i++)
-				if (!elements().containsKey(i)) {
-					return element(i);
-				}
-			return elements().get(MAX_INDEX - 1);
-		}
-		
-		default Item element(Number row, Number column) {
-			return element((row.intValue() * 9) + column.intValue());
-		}
-		
-		Item element(Number index);
-		
-		
-		//--Events--
-		default EventListener onClose(Runnable listener) {
-			return onClose(player -> listener.run());
-		}
-		
-		default EventListener onOpen(Runnable listener) {
-			return onOpen(player -> listener.run());
-		}
-		
-		EventListener onClose(Consumer<Player> listener);
-		
-		EventListener onOpen(Consumer<Player> listener);
-	}
-	
-	private class PageImpl implements Page, InventoryHolder {
-		final ListMultimap<ItemStack, BiPredicate<Player, ClickType>> clickListeners =
-				newListMultimap(new IdentityHashMap<>(), ArrayList::new);
-		final List<Consumer<Player>> closeListeners = new ArrayList<>();
-		final List<Consumer<Player>> openListeners = new ArrayList<>();
-		final Map<Integer, Item> elements = new IdentityHashMap<>();
-		String title = "Chest Mk.2";
+	private static abstract class PageImpl implements Page {
+		Consumer<Player> openListener, closeListener;
 		
 		@Override
-		public Page title(Object title) {
-			this.title = title.toString();
+		public void onClose(Consumer<Player> listener) {
+			closeListener = listener;
+		}
+		
+		@Override
+		public void onOpen(Consumer<Player> listener) {
+			openListener = listener;
+		}
+	}
+	
+	private static class ItemImpl extends ItemStack implements Item {
+		BiPredicate<Player, ClickType> listener = (p, t) -> true;
+		
+		@Override
+		public void onClick(BiPredicate<Player, ClickType> listener) {
+			this.listener = listener;
+		}
+		
+		@Override
+		public ItemStack itemStack() {
 			return this;
 		}
+	}
+	
+	interface Page extends InventoryHolder {
+		Item[] items();
 		
-		@Override
-		public Map<Integer, Item> elements() {
-			return elements;
+		int size();
+		
+		String title();
+		
+		default Item item() {
+			return item(STONE);
 		}
 		
-		@Override
-		public Inventory toInventory() {
-			Inventory inventory = createInventory(this, size(), title);
-			elements.forEach((index, item) -> inventory.setItem(index, item.itemStack()));
-			return inventory;
-		}
-		
-		@Override
-		public Item element(Number index) {
-			if (index.intValue() < MAX_INDEX)
-				return elements().computeIfAbsent(index.intValue(), $ -> new Item() {
-					final ItemStack stack = new ItemStack(STONE);
-					final List<BiPredicate<Player, ClickType>> listeners = clickListeners.get(stack);
-					
-					@Override
-					public ItemStack itemStack() {
-						return stack;
-					}
-					
-					@Override
-					public EventListener onClick(BiPredicate<Player, ClickType> listener) {
-						listeners.add(listener);
-						return () -> listeners.remove(listener);
-					}
-					
-				});
+		//TODO consider making this a little smarter.
+		default Item item(Material type) {
+			for (int i = 0; i < size(); i++)
+				if (items()[i] == null)
+					return item(i, type);
 			throw new IndexOutOfBoundsException("There is no room left in this page!");
 		}
 		
-		@Override
-		public EventListener onClose(Consumer<Player> listener) {
-			closeListeners.add(listener);
-			return () -> closeListeners.remove(listener);
+		default Item item(Number row, Number column) {
+			return item(row, column, STONE);
 		}
 		
-		@Override
-		public EventListener onOpen(Consumer<Player> listener) {
-			openListeners.add(listener);
-			return () -> openListeners.remove(listener);
+		default Item item(Number row, Number column, Material type) {
+			return item((row.intValue() * 9) + column.intValue(), type);
 		}
 		
-		@Override
-		public Inventory getInventory() {
-			throw new UnsupportedOperationException("Use toInventory() instead.");
+		default Item item(Number index) {
+			return item(index, STONE);
 		}
+		
+		default Item item(Number index, Material type) {
+			return items()[index.intValue()] = new ItemImpl().type(type);
+		}
+		
+		//--Events--
+		default void onClose(Runnable listener) {
+			onClose(player -> listener.run());
+		}
+		
+		default void onOpen(Runnable listener) {
+			onOpen(player -> listener.run());
+		}
+		
+		void onClose(Consumer<Player> listener);
+		
+		void onOpen(Consumer<Player> listener);
 	}
 	
 	interface Item {
@@ -229,7 +195,7 @@ public class MiniWindow implements Listener {
 			return this;
 		}
 		
-		default Item icon(Material material) {
+		default Item type(Material material) {
 			itemStack().setType(material);
 			return this;
 		}
@@ -253,25 +219,24 @@ public class MiniWindow implements Listener {
 			return this;
 		}
 		
-		default EventListener onClick(Runnable runnable) {
-			return onClick($ -> runnable.run());
+		default void onClick(Runnable runnable) {
+			onClick($ -> runnable.run());
 		}
 		
-		
-		default EventListener onClick(Consumer<Player> listener) {
-			return onClick((player, type) -> {
+		default void onClick(Consumer<Player> listener) {
+			onClick((player, type) -> {
 				listener.accept(player);
 			});
 		}
 		
-		default EventListener onClick(BiConsumer<Player, ClickType> listener) {
-			return onClick((player, type) -> {
+		default void onClick(BiConsumer<Player, ClickType> listener) {
+			onClick((player, type) -> {
 				listener.accept(player, type);
 				return true;
 			});
 		}
 		
-		EventListener onClick(BiPredicate<Player, ClickType> listener);
+		void onClick(BiPredicate<Player, ClickType> listener);
 	}
 }
 
@@ -288,7 +253,7 @@ public class MiniWindow implements Listener {
 			page.onOpen(player ->
 					System.out.println(format(openMessage, player.getName()))
 			);
-			page.element()
+			page.item()
 					.title("Test Item")
 					.icon(Material.APPLE)
 					.amount(3)

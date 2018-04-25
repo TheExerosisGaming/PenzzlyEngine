@@ -15,6 +15,12 @@ import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ByteChannel;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -26,6 +32,7 @@ import static com.penzzly.engine.architecture.functions.Optional.of;
 import static com.penzzly.engine.core.base.Events.listen;
 import static com.penzzly.engine.core.utilites.functions.Functions.roundRobin;
 import static java.lang.Math.round;
+import static java.nio.file.StandardOpenOption.CREATE_NEW;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toMap;
@@ -54,7 +61,7 @@ public class BlockUtil {
 		return new MaterialData(block.getType(), block.getData());
 	}
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		final Map<Block, Inventory> chestSpawns = new HashMap<>();
 		int count = 1; //How many chests you want to spawn
 		int range = 1; //How far out you want to spawn them
@@ -116,14 +123,14 @@ public class BlockUtil {
 	}
 	
 	private static final BlockFace[] ORDERED = {
-			NORTH, NORTH_EAST,
-			EAST, SOUTH_EAST,
 			SOUTH, SOUTH_WEST,
-			WEST, NORTH_WEST
+			WEST, NORTH_WEST,
+			NORTH, NORTH_EAST,
+			EAST, SOUTH_EAST
 	};
 	
 	public static BlockFace direction(float yaw) {
-		return ORDERED[round(yaw / 45f) & 0x3];
+		return ORDERED[round(yaw / 45) & 0x7];
 	}
 	
 	public static BlockFace direction(@NotNull Entity entity) {
@@ -133,6 +140,7 @@ public class BlockUtil {
 	public static BlockFace direction(@NotNull Location location) {
 		return direction(location.getYaw());
 	}
+	
 	
 	public static void main3(String[] args) {
 		System.out.println(direction(90));
