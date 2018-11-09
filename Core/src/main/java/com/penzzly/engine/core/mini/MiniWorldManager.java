@@ -27,13 +27,9 @@ import static java.nio.file.Files.*;
 import static java.nio.file.Paths.get;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 import static java.util.Optional.ofNullable;
-import static org.apache.commons.io.FileUtils.openInputStream;
-import static org.apache.commons.io.IOUtils.buffer;
 import static org.bukkit.Bukkit.*;
 import static org.bukkit.WorldType.FLAT;
 
-//I was so close to using only nio stuff... but I just can't help these look better.
-//Feel free to replace with FileInputStream and BufferedInputStream.
 //https://gist.github.com/Exerosis/e198e1681172573b51e4ff5627baefc7
 public class MiniWorldManager {
 	private final Plugin plugin;
@@ -93,7 +89,7 @@ public class MiniWorldManager {
 		if ((backup.endsWith(".zip") && exists(backup))) {
 			return ofZip(container -> {
 				try {
-					return buffer(openInputStream(backup.toFile()));
+					return newInputStream(backup);
 				} catch (IOException e) {
 					throw new LoadException(container.getPath(), backup, true, e);
 				}
@@ -127,7 +123,7 @@ public class MiniWorldManager {
 	public WorldContainer from(URL url, Path path) {
 		return ofZip(container -> {
 			try {
-				return buffer(url.openStream());
+				return url.openStream();
 			} catch (IOException e) {
 				throw new LoadException(container.getPath(), url, e);
 			}
